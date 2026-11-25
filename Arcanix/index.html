@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Arcanix</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header id="topbar">
+  <div class="tzone">
+    <div class="brand"><span class="logo"></span>Arcanix</div>
+    <div class="group">
+      <button id="btnImport" class="primary" data-icon="import" title="Import media (video, audio, images)"><span>Import</span></button>
+    </div>
+    <div class="group">
+      <button id="btnUndo" class="icon" data-icon="undo" title="Undo (Ctrl+Z)"></button>
+      <button id="btnRedo" class="icon" data-icon="redo" title="Redo (Ctrl+Y)"></button>
+    </div>
+  </div>
+  <input id="projName" type="text" maxlength="80" spellcheck="false" title="Project name — used for exported file names" value="Untitled project">
+  <div class="tzone end">
+    <div class="seg" id="modeSeg">
+      <button id="btnSimple" title="Simple mode: only the everyday controls">Simple</button>
+      <button id="btnAdv" title="Advanced mode: keyframes, crop, colour sliders, track tools, razor">Advanced</button>
+    </div>
+    <div class="group">
+      <button id="btnTogLib" class="icon on" data-icon="panelL" title="Show / hide the library panel"></button>
+      <button id="btnTogInsp" class="icon on" data-icon="panelR" title="Show / hide the Inspector"></button>
+    </div>
+    <div class="group">
+      <button id="btnSettings" class="icon" data-icon="gear" title="Project settings, shortcuts, new project"></button>
+      <button id="btnExport" class="primary" data-icon="export" title="Render the sequence to a video file"><span>Export</span></button>
+    </div>
+  </div>
+  <input id="fileInput" type="file" accept="video/*,audio/*,image/*" multiple hidden>
+</header>
+
+<main id="main">
+  <section id="binPanel" class="panel">
+    <nav id="rail"></nav>
+    <div id="libBody">
+      <h3><span id="libTitle">Media</span> <span id="binCount" class="count"></span></h3>
+      <div id="binBar">
+        <input id="binQ" type="search" placeholder="Search media" aria-label="Search media" spellcheck="false">
+        <select id="binSort" aria-label="Sort media" title="Sort the media bin"></select>
+        <button id="binUnused" title="Remove every media file that no clip uses">Remove unused</button>
+      </div>
+      <div id="bin"></div>
+      <div id="lib" hidden></div>
+    </div>
+  </section>
+  <div id="splitL" class="vsplit" title="Drag to resize"></div>
+
+  <section id="monitorPanel" class="panel">
+    <div id="stage">
+      <canvas id="cv" width="1920" height="1080"></canvas>
+      <div id="emptyState">
+        <div class="emptyCard">
+          <div class="emptyIcon"></div>
+          <b>Start by adding media</b>
+          <span>Pick a shape, then drop video, audio, or image files anywhere in this window.</span>
+          <div class="fmtRow">
+            <button data-res="1920x1080" title="1920×1080 — YouTube, TV, computers">▭ Landscape</button>
+            <button data-res="1080x1920" title="1080×1920 — TikTok, Reels, Shorts">▯ Vertical</button>
+            <button data-res="1080x1080" title="1080×1080 — Instagram posts">□ Square</button>
+          </div>
+          <button id="btnEmptyImport" class="primary" data-icon="import"><span>Import files</span></button>
+        </div>
+      </div>
+    </div>
+    <div id="transport">
+      <span id="tc" class="tc" title="Current time">00:00:00:00</span>
+      <div class="tbtns">
+        <button id="btnStart" class="icon" data-icon="start" title="Go to start (Home)"></button>
+        <button id="btnPrev" class="icon" data-icon="prev" title="Back one frame (←)"></button>
+        <button id="btnPlay" class="icon play" data-icon="play" title="Play / Pause (Space)"></button>
+        <button id="btnNext" class="icon" data-icon="next" title="Forward one frame (→)"></button>
+        <button id="btnEnd" class="icon" data-icon="end" title="Go to end (End)"></button>
+      </div>
+      <div class="tright">
+        <canvas id="meter" width="84" height="10" title="Output level"></canvas>
+        <button id="btnGuides" class="icon" data-icon="guides" title="Safe-area guides (G)"></button>
+        <span id="tcDur" class="tc dim" title="Sequence length">00:00:00:00</span>
+      </div>
+    </div>
+  </section>
+
+  <div id="splitR" class="vsplit" title="Drag to resize"></div>
+  <section id="inspPanel" class="panel">
+    <h3>Inspector</h3>
+    <div id="insp"></div>
+  </section>
+</main>
+
+<section id="tlPanel">
+  <div id="tlSplit" title="Drag to resize the timeline"></div>
+  <div id="tlTools">
+    <div class="seg" id="toolSeg">
+      <button id="toolSelect" class="tool on" data-icon="select" title="Selection tool (V)"><span>Select</span></button>
+      <button id="toolRazor" class="tool" data-icon="razor" title="Razor tool (C) — click a clip to cut it"><span>Cut</span></button>
+    </div>
+    <span class="sep"></span>
+    <button id="btnSplit" data-icon="split" title="Split at playhead (S or Ctrl+K)"><span>Split</span></button>
+    <button id="btnDelete" class="icon" data-icon="trash" title="Delete clip (Del). Right-click a clip for more."></button>
+    <button id="btnFreeze" data-icon="freeze" title="Freeze frame: hold the video picture at the playhead for 2 seconds (F)"><span>Freeze</span></button>
+    <button id="btnGaps" data-icon="gaps" title="Close gaps: remove empty time where nothing plays, keeping everything in sync"><span>Close gaps</span></button>
+    <button id="btnVoice" data-icon="mic" title="Record a voiceover from your microphone, starting at the playhead"><span>Voiceover</span></button>
+    <button id="btnSnap" class="icon on" data-icon="magnet" title="Snapping (N)"></button>
+    <div class="spacer"></div>
+    <button id="btnFit" class="icon" data-icon="fit" title="Fit sequence to window (\)"></button>
+    <input id="zoom" type="range" min="0" max="100" value="55" title="Timeline zoom (+ / −, Ctrl+wheel)">
+  </div>
+  <div id="tl">
+    <div id="tlInner">
+      <div id="rulerRow">
+        <div id="corner">
+          <button id="btnAddV" title="Add a video track">+ Video</button>
+          <button id="btnAddA" title="Add an audio track">+ Audio</button>
+        </div>
+        <canvas id="ruler"></canvas>
+      </div>
+      <div id="rows"></div>
+      <div id="playhead"></div>
+    </div>
+  </div>
+</section>
+
+<footer id="status">
+  <span id="stHint"></span>
+  <span class="spacer"></span>
+  <span id="stInfo"></span>
+  <span id="saveState"></span>
+</footer>
+
+<div id="modal" hidden><div id="modalBox"></div></div>
+<div id="dropHint" hidden>Drop files to import</div>
+<div id="toasts"></div>
+
+<script src="layers.js"></script>
+<script src="app.js"></script>
+<script src="fastexport.js"></script>
+<script src="sounds.js"></script>
+<script src="rustcore.js"></script>
+<script src="shell-tauri.js"></script>
+</body>
+</html>
