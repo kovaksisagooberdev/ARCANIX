@@ -1,0 +1,65 @@
+{
+  "name": "arcanix",
+  "productName": "Arcanix",
+  "version": "1.1.0",
+  "description": "Arcanix video editor",
+  "author": "Arcanix",
+  "license": "MIT",
+  "main": "main.js",
+  "private": true,
+  "scripts": {
+    "build": "node build/embed-wasm.js && tauri build",
+    "installer": "node build/embed-wasm.js && tauri build",
+    "build:linux": "node build/embed-wasm.js && tauri build --bundles appimage,deb",
+    "dev": "tauri dev",
+    "wasm": "node build/embed-wasm.js",
+    "icon": "node build/make-icon.js",
+    "start": "electron .",
+    "electron:package": "node build/make-icon.js && electron-packager . Arcanix --platform=win32 --arch=x64 --out=dist --overwrite --asar --icon=build/icon.ico --ignore=\"^/dist\" --ignore=\"^/build\" --ignore=\"^/\\.claude\" --ignore=\"^/devserver.js\"",
+    "electron:portable": "node build/make-icon.js && electron-builder --win portable --x64",
+    "electron:installer": "node build/make-icon.js && electron-builder --win nsis --x64 --publish never"
+  },
+  "build": {
+    "appId": "app.arcanix.editor",
+    "productName": "Arcanix",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "index.html",
+      "layers.js",
+      "app.js",
+      "fastexport.js",
+      "sounds.js",
+      "rustcore.js",
+      "shell-tauri.js",
+      "style.css",
+      "selftest.js"
+    ],
+    "win": {
+      "target": "portable",
+      "icon": "build/icon.ico"
+    },
+    "portable": {
+      "artifactName": "Arcanix.exe"
+    },
+    "nsis": {
+      "artifactName": "Arcanix-Setup.exe",
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Arcanix",
+      "runAfterFinish": true
+    }
+  },
+  "devDependencies": {
+    "@electron/packager": "^20.3.0",
+    "@tauri-apps/cli": "^2.12.6",
+    "electron": "^45.3.2",
+    "electron-builder": "^24.13.3"
+  }
+}

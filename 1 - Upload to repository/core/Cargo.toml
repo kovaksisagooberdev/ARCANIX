@@ -1,0 +1,17 @@
+[package]
+name = "arcanix_core"
+version = "2.0.0"
+edition = "2021"
+description = "Arcanix pixel and audio kernels, compiled to WebAssembly and called from the editor page"
+license = "MIT"
+
+[lib]
+crate-type = ["cdylib"]
+path = "src/lib.rs"
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = true
